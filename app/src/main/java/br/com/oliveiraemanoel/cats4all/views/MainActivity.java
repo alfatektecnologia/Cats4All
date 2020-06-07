@@ -10,6 +10,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private final List<String> catCollectionListUrl = new ArrayList<>();
     private final List<List<Images>> catImagesList = new ArrayList<>();
     private List<Object> catImages = new ArrayList<>();
-    private ProgressDialog progressDialog;
+    private ProgressBar progressBar;
 
     @Override
     protected void onStart() {
@@ -48,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
             ConnectivityManager connectivityManager
                     = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        assert connectivityManager != null;
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
             return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
     }
@@ -57,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressBar = findViewById(R.id.progress_circular);
+        progressBar.setVisibility(View.VISIBLE);
 
         //recyclerview instance
         RecyclerView recyclerView = findViewById(R.id.rvCat);
@@ -87,17 +92,18 @@ public class MainActivity extends AppCompatActivity {
                  for ( int t=0;t<catImagesList.size();t++){
 
                      try {
-                        //only images file is added to the list of imageUrl
+                        //only images type file is added to the list of imageUrl
                         if (catImagesList.get(t).get(0).getType().contains("jpeg")) {
                              catCollectionListUrl.add(catImagesList.get(t).get(0).getLink());
                          }
-                      //todo recognation images avoiding all images other than cats
+                      //todo recognate images avoiding all images other than cats
                      }catch (Exception e){
                          Log.d("TRY_POPULATING_URL_IMAGES",e.toString());
                      }
                  }
 
              }
+             progressBar.setVisibility(View.GONE);
              //refreshing adapter
                 catsAdapter.notifyDataSetChanged();
 
