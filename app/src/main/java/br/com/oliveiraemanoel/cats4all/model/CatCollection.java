@@ -25,5 +25,9 @@ public class CatCollection {
         this.status = status;
     }
 
+
+
+
+
 }
 

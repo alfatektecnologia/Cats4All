@@ -7,8 +7,15 @@ import retrofit2.http.GET;
 
 import retrofit2.http.Header;
 
+public interface GetDataService{
 
-public interface GetDataService {
+    @GET("gallery/search/?q=cats")
+
+    Call <CatCollection> getAllCollection(@Header("Authorization") String clientId);
+}
+
+
+/*public interface GetDataService {
 
    @GET("gallery/search/?q=cats")
 
@@ -16,4 +23,4 @@ public interface GetDataService {
 
 //Credentials.basic("6c0c4345b3a49d3","988206cb25a81c7c5e740fce7db45ed4eb595612");
 
-}
+}*/

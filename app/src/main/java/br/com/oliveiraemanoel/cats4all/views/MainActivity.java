@@ -1,10 +1,7 @@
 package br.com.oliveiraemanoel.cats4all.views;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,13 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import br.com.oliveiraemanoel.cats4all.R;
 import br.com.oliveiraemanoel.cats4all.adapters.CatsAdapter;
 import br.com.oliveiraemanoel.cats4all.model.CatCollection;
+import br.com.oliveiraemanoel.cats4all.model.Cats;
 import br.com.oliveiraemanoel.cats4all.model.Data;
 import br.com.oliveiraemanoel.cats4all.model.Images;
 import br.com.oliveiraemanoel.cats4all.retrofit.GetDataService;
@@ -41,18 +37,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-       if(!hasInternet()){
-           Toast.makeText(getApplicationContext(),"Verifique sua conexão com a internet!",Toast.LENGTH_LONG).show();
-       }
+        if(!hasInternet()){
+            Toast.makeText(getApplicationContext(),"Verifique sua conexão com a internet!",Toast.LENGTH_LONG).show();
+        }
     }
     //checking if exist an internet connection
     private boolean hasInternet(){
 
-            ConnectivityManager connectivityManager
-                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         assert connectivityManager != null;
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
     }
 
@@ -70,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         GetDataService getDataService =
                 RetrofitCatInstance.getRetrofitInstance().create(GetDataService.class);
         //access_token=a87c0eaf0cf72719a3e47a6a762e422c71335c32
+
         Call<CatCollection> call = getDataService.getAllCollection("Client-ID 6c0c4345b3a49d3");
         call.enqueue(new Callback<CatCollection>() {
             @Override
@@ -77,34 +74,34 @@ public class MainActivity extends AppCompatActivity {
 
                 assert response.body() != null;
                 dataList =  response.body().getData();
-              //checking is exist a valid response
-             if(dataList!=null){
-                 int i=0;
-                 do {
-                    try {
-                        catImagesList.add(dataList.get(i).getImages());
-                    }catch (Exception e){
-                        Log.d("TRY_CATCHING_CAT_IMAGES",e.toString());
+                //checking is exist a valid response
+                if(dataList!=null){
+                    int i=0;
+                    do {
+                        try {
+                            catImagesList.add(dataList.get(i).getImages());
+                        }catch (Exception e){
+                            Log.d("TRY_CATCHING_CAT_IMAGES",e.toString());
+                        }
+                        i++;
+                    }while (i < dataList.size());
+                    //populating urlList used in recyclerview
+                    for ( int t=0;t<catImagesList.size();t++){
+
+                        try {
+                            //only images type file is added to the list of imageUrl
+                            if (catImagesList.get(t).get(0).getType().contains("jpeg")) {
+                                catCollectionListUrl.add(catImagesList.get(t).get(0).getLink());
+                            }
+                            //todo recognate images avoiding all images other than cats
+                        }catch (Exception e){
+                            Log.d("TRY_POPULATING_URL_IMAGES",e.toString());
+                        }
                     }
-                     i++;
-                 }while (i < dataList.size());
-                 //populating urlList used in recyclerview
-                 for ( int t=0;t<catImagesList.size();t++){
 
-                     try {
-                        //only images type file is added to the list of imageUrl
-                        if (catImagesList.get(t).get(0).getType().contains("jpeg")) {
-                             catCollectionListUrl.add(catImagesList.get(t).get(0).getLink());
-                         }
-                      //todo recognate images avoiding all images other than cats
-                     }catch (Exception e){
-                         Log.d("TRY_POPULATING_URL_IMAGES",e.toString());
-                     }
-                 }
-
-             }
-             progressBar.setVisibility(View.GONE);
-             //refreshing adapter
+                }
+                progressBar.setVisibility(View.GONE);
+                //refreshing adapter
                 catsAdapter.notifyDataSetChanged();
 
             }
@@ -116,9 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,
                         "Something went wrong...Please try later!",
                         Toast.LENGTH_SHORT).show();
-
             }
-
 
         });
 

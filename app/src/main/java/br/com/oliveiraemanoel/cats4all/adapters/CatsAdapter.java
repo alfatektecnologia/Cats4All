@@ -49,6 +49,7 @@ public class CatsAdapter extends RecyclerView.Adapter<CatsAdapter.ViewHolder> {
                 .placeholder(R.drawable.ic_pets)
                 .into(holder.image);
         holder.cardView.setOnClickListener(v -> {
+            //some cat sound to play when click the card
             int[] sounds = {R.raw.zapsplat_cat_kitten_meow_004,
                     R.raw.zapsplat_cat_kitten_meow_006,
                     R.raw.zapsplat_cat_kitten_meow_007};
